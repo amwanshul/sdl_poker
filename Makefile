@@ -1,42 +1,36 @@
-# Makefile for SDL Poker Game
-# Platform: Windows 10/11 with MinGW-w64 (MSYS2)
+# Makefile for raylib-poker on Windows with MinGW-w64
 
-# Compiler
+# Compiler and flags
 CC = gcc
+CFLAGS = -Wall -Wextra -std=c99 -I.
+LDFLAGS = -L. -lraylib -lopengl32 -lgdi32 -lwinmm
 
-# Compiler flags
-CFLAGS = -Wall -Wextra -std=c99 -O2
-
-# SDL2 flags
-SDL_CFLAGS = $(shell sdl2-config --cflags)
-SDL_LIBS = $(shell sdl2-config --libs) -lSDL2_image
-
-# Target executable
-TARGET = sdl_poker.exe
+# Project name
+TARGET = poker
 
 # Source files
-SOURCES = sdl_poker.c
+SRCS = raylib_poker.c
 
 # Object files
-OBJECTS = $(SOURCES:.c=.o)
+OBJS = $(SRCS:.c=.o)
 
 # Default target
 all: $(TARGET)
 
-# Build the executable
-$(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(TARGET) $(SDL_LIBS)
+# Link the executable
+$(TARGET): $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET).exe $(LDFLAGS)
 
-# Compile source files
+# Compile source files into object files
 %.o: %.c
-	$(CC) $(CFLAGS) $(SDL_CFLAGS) -c $< -o $@
-
-# Clean build artifacts
-clean:
-	rm -f $(OBJECTS) $(TARGET)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Run the game
-run: $(TARGET)
-	./$(TARGET)
+run: all
+	./$(TARGET).exe
 
-.PHONY: all clean run
+# Clean up build files
+clean:
+	del /Q *.o *.exe
+
+.PHONY: all run clean
